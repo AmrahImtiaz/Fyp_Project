@@ -108,7 +108,6 @@ export default function BrowseQuestionsPage() {
               </Button>
             </Link>
           </div>
-
           {/* Search & Filters */}
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="flex-1 relative">

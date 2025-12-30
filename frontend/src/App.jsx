@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import Signup from './pages/Signup'
 import Login from './pages/Login'
 import VerifyEmail from './pages/VerifyEmail'
+import QuestionDetail from "./pages/QuestionDetail"
 import Verify from './pages/Verify'
 import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -12,6 +13,7 @@ import VerifyOTP from './pages/VerifyOTP'
 import ChangePassword from './pages/ChangePassword'
 import AuthSuccess from './pages/AuthSuccess'
 import BrowseQuestion from './pages/browsequestion'
+ 
 import About from "./pages/About"
 import Askquestion from "./pages/askquestion"
 const router = createBrowserRouter([
@@ -66,11 +68,16 @@ const router = createBrowserRouter([
   {
     path:'/browsequestions',
     element:<BrowseQuestion/>
+    
   },
   {
     path:'/askquestion',
     element:<Askquestion/>
   },
+  {
+  path: "/questions/:id",
+  element: <QuestionDetail />
+}
 ])
 
 const App = () => {

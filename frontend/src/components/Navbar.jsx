@@ -46,7 +46,13 @@ const Navbar = () => {
                 {/* logo section  */}
                 <div className='flex gap-2 items-center'>
                     <BookOpen className='h-6 w-6 text-blue-800' />
-                    <h1 className='font-bold text-xl'><span className='text-blue-600'>Learn </span> stack </h1>
+                    
+                <h1 className='font-bold text-xl'>
+  <span className='text-blue-600'>
+    <Link to="/">Learn</Link>
+  </span> 
+  Stack
+</h1>
                 </div>
                 <form className="relative w-72">
   <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
