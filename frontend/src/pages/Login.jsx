@@ -52,7 +52,20 @@ const Login = () => {
                 toast.success(res.data.message)
             }
         } catch (error) {
-            console.log(error);
+            console.log('Login error', error)
+            const resp = error?.response?.data
+            let msg = error.message
+            if (resp) {
+                if (resp.message) msg = resp.message
+                else if (Array.isArray(resp.errors)) msg = resp.errors.join(', ')
+                else if (typeof resp === 'string') msg = resp
+            }
+            toast.error(msg)
+            // If account not verified, optionally navigate to verify page
+            if (error?.response?.status === 403) {
+                // keep user on login but suggest verification
+                // navigate('/verify') // uncomment to redirect automatically
+            }
 
         } finally {
             setIsLoading(false)
@@ -72,7 +85,7 @@ const Login = () => {
                             <CardHeader className='space-y-1'>
                                 <CardTitle className='text-2xl text-center text-blue-600'>Login</CardTitle>
                                 <CardDescription className='text-center'>
-                                        Login into your account to get started with using Learnstack
+                                        Login into your account to get started with Notes App
                                     </CardDescription>
                             </CardHeader>
                             <CardContent>

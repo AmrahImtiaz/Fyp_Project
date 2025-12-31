@@ -21,6 +21,8 @@ export const validateUser = (schema) => async (req, res, next) =>{
         await schema.validate(req.body)
         next()
     } catch (err) {
-        return res.status(400).json({errors:err.errors})
+        console.error('User validation failed:', { body: req.body, errors: err.errors })
+        const message = Array.isArray(err.errors) ? err.errors.join(', ') : err.message
+        return res.status(400).json({ message, errors: err.errors })
     }
 }

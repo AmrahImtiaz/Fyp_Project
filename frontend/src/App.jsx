@@ -13,6 +13,7 @@ import VerifyOTP from './pages/VerifyOTP'
 import ChangePassword from './pages/ChangePassword'
 import AuthSuccess from './pages/AuthSuccess'
 import BrowseQuestion from './pages/browsequestion'
+import Chatpage from './pages/Chatpage'
  
 import About from "./pages/About"
 import Askquestion from "./pages/askquestion"
@@ -77,7 +78,12 @@ const router = createBrowserRouter([
   {
   path: "/questions/:id",
   element: <QuestionDetail />
+},
+{
+  path: "/chatwithai",
+  element: <Chatpage />
 }
+
 ])
 
 const App = () => {

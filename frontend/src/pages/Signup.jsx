@@ -51,8 +51,15 @@ const Signup = () => {
                 toast.success(res.data.message)
             }
         } catch (error) {
-            console.log(error);
-            
+            console.log('Signup error', error)
+            const resp = error?.response?.data
+            let msg = error.message
+            if (resp) {
+                if (resp.message) msg = resp.message
+                else if (Array.isArray(resp.errors)) msg = resp.errors.join(', ')
+                else if (typeof resp === 'string') msg = resp
+            }
+            toast.error(msg)
         } finally{
             setIsLoading(false)
         }
@@ -65,7 +72,7 @@ const Signup = () => {
                     <div className='w-full max-w-md space-y-6'>
                         <div className='text-ceter space-y-2'>
                             <h1 className='text-3xl font-bold tracking-tight text-blue-600'>Create your account</h1>
-                            <p className='text-gray-600'>Start collaborative learning with </p>
+                            <p className='text-gray-600'>Start organizing your thoughts and ideas today</p>
                         </div>
                         <Card className="w-full max-w-sm">
                             <CardHeader className='space-y-1'>

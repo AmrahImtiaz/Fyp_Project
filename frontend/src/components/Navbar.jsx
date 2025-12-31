@@ -77,6 +77,11 @@ const Navbar = () => {
     <li className="cursor-pointer hover:text-blue-600">Browse Questions</li>
   </Link>
 
+
+  <Link to="/Chatwithai">
+    <li className="cursor-pointer hover:text-blue-600">Chat with AI</li>
+  </Link>
+
   <Link to="/about">
     <li className="cursor-pointer hover:text-blue-600">About</li>
   </Link>

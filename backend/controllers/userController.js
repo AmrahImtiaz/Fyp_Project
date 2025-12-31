@@ -16,7 +16,7 @@ export const registerUser = async (req, res) => {
         }
         const existingUser = await User.findOne({ email })
         if (existingUser) {
-            return res.status(400).json({
+            return res.status(409).json({
                 success: false,
                 message: "User already exists"
             })
@@ -28,7 +28,11 @@ export const registerUser = async (req, res) => {
             password: hashedPassword
         })
         const token = jwt.sign({ id: newUser._id }, process.env.SECRET_KEY, { expiresIn: "10m" })
-        verifyMail(token, email)
+        try {
+            await verifyMail(token, email)
+        } catch (mailErr) {
+            console.error('Failed to send verification email:', mailErr)
+        }
         newUser.token = token
         await newUser.save()
         return res.status(201).json({
@@ -37,6 +41,15 @@ export const registerUser = async (req, res) => {
             data: newUser
         })
     } catch (error) {
+        console.error(error)
+        // Handle duplicate key (unique index) errors gracefully
+        if (error && (error.code === 11000 || error.code === 11001)) {
+            return res.status(409).json({
+                success: false,
+                message: 'Email already registered'
+            })
+        }
+
         return res.status(500).json({
             success: false,
             message: error.message
@@ -89,6 +102,7 @@ export const verification = async (req, res) => {
             message: "Email verified successfully"
         })
     } catch (error) {
+        console.error(error)
         return res.status(500).json({
             success: false,
             message: error.message
@@ -152,10 +166,11 @@ export const loginUser = async (req, res) => {
             user
         })
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message
-        })
+            console.error(error)
+            return res.status(500).json({
+                success: false,
+                message: error.message
+            })
     }
 }
 
