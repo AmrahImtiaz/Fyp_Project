@@ -1,6 +1,7 @@
 import express from "express"
 import 'dotenv/config'
 import connectDB from "./database/db.js"
+// import questionRoutes from "./routes/question.routes.js";
 import userRoute from "./routes/userRoute.js"
 import authRoute from "./routes/authRoute.js"
 import cors from 'cors'
@@ -24,6 +25,7 @@ app.use((req, res, next) => {
 
 app.use('/auth', authRoute)
 app.use('/user', userRoute)
+// app.use("/api/questions", questionRoutes)
 
 // http://localhost:8000/user/register
 
