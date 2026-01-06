@@ -87,32 +87,53 @@ export default function ChatPage() {
     return responses[Math.floor(Math.random() * responses.length)]
   }
 
-  const handleSendMessage = () => {
-    if (!inputValue.trim()) return
+const handleSendMessage = async () => {
+  if (!inputValue.trim()) return;
 
-    const userMessage = {
-      id: Date.now().toString(),
-      content: inputValue,
-      sender: "user",
+  // Add user's message to chat
+  const userMessage = {
+    id: Date.now().toString(),
+    content: inputValue,
+    sender: "user",
+    timestamp: new Date(),
+  };
+
+  setMessages((prev) => [...prev, userMessage]);
+  setInputValue("");
+  setIsTyping(true);
+
+  try {
+    // Call backend API
+    const res = await fetch("http://localhost:8000/api/chat/ai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt: userMessage.content }),
+    });
+
+    const data = await res.json();
+
+    const aiMessage = {
+      id: (Date.now() + 1).toString(),
+      content: data.text,
+      sender: "ai",
       timestamp: new Date(),
-    }
+    };
 
-    setMessages((prev) => [...prev, userMessage])
-    setInputValue("")
-    setIsTyping(true)
-
-    setTimeout(() => {
-      const aiMessage = {
-        id: (Date.now() + 1).toString(),
-        content: generateAIResponse(),
-        sender: "ai",
-        timestamp: new Date(),
-      }
-
-      setMessages((prev) => [...prev, aiMessage])
-      setIsTyping(false)
-    }, 1500)
+    setMessages((prev) => [...prev, aiMessage]);
+  } catch (err) {
+    console.error(err);
+    const aiMessage = {
+      id: (Date.now() + 1).toString(),
+      content: "Sorry, I couldn't generate a response.",
+      sender: "ai",
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, aiMessage]);
+  } finally {
+    setIsTyping(false);
   }
+};
+
 
   const handleNewChat = () => {
     setMessages([

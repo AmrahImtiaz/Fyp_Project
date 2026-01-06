@@ -14,7 +14,7 @@ import ChangePassword from './pages/ChangePassword'
 import AuthSuccess from './pages/AuthSuccess'
 import BrowseQuestion from './pages/browsequestion'
 import Chatpage from './pages/Chatpage'
- 
+import Userprofile from './pages/Userprofile'
 import About from "./pages/About"
 import Askquestion from "./pages/askquestion"
 const router = createBrowserRouter([
@@ -30,28 +30,60 @@ const router = createBrowserRouter([
   )
 },
   {
+    
     path:'/signup',
-    element:<Signup/>
+    element:
+    <>
+    
+    <Signup/>
+    
+  </>
   },
   {
+    
     path:'/verify',
-    element:<VerifyEmail/>
+    element:
+    <>
+    
+    <VerifyEmail/>
+    
+    </>
   },
   {
     path:'/verify/:token',
-    element:<Verify/>
+    element:
+    <>
+    
+    <Verify/>
+    
+    </>
   },
   {
     path:'/login',
-    element:<Login/>
+    element:
+    <>
+
+<Login/>
+    
+    </>
   },
   {
     path:'/auth-success',
-    element:<AuthSuccess/>
+    element:
+    <>
+    
+    <AuthSuccess/>
+    
+    </>
   },
   {
     path:'/forgot-password',
-    element:<ForgotPassword/>
+    element:
+    <>
+  
+    <ForgotPassword/>
+   </>
+    
   },
   {
     path:'/verify-otp/:email',
@@ -59,30 +91,74 @@ const router = createBrowserRouter([
   },
   {
     path:'/change-password/:email',
-    element:<ChangePassword/>
+    element: 
+    <ChangePassword/>
+  
   },
   {
+
     path:'/about',
-    element:<About/>
+    element:
+    <>
+    <ProtectedRoute>
+    <About/>
+    </ProtectedRoute>
+    </>
+  
+  
   },
   
   {
     path:'/browsequestions',
-    element:<BrowseQuestion/>
+    element:
+    <>
+<ProtectedRoute>
     
+    <BrowseQuestion/>
+ </ProtectedRoute>
+    </>   
+
   },
   {
     path:'/askquestion',
-    element:<Askquestion/>
+    element:
+    <>
+    <ProtectedRoute>
+    <Askquestion/>
+    </ProtectedRoute>
+    </>
+  
+
   },
   {
   path: "/questions/:id",
-  element: <QuestionDetail />
+  element: 
+  <>
+  <ProtectedRoute>
+  <QuestionDetail />
+</ProtectedRoute>
+    </>
+
 },
 {
   path: "/chatwithai",
-  element: <Chatpage />
-}
+  element: 
+  <>
+  <ProtectedRoute>
+  <Chatpage />
+</ProtectedRoute>
+    </>
+},
+{
+  path: "/Userprofile",
+  element: 
+  <>
+  <ProtectedRoute>
+  <Userprofile />
+  </ProtectedRoute>
+  </>
+},
+
 
 ])
 

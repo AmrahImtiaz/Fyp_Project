@@ -31,7 +31,7 @@ const Hero = () => {
               </p>
             </div>
             <div className="space-x-4">
-              <Button onClick={()=>navigate('/create-todo')} size="lg" className="h-12 px-8 relative bg-blue-600 hover:bg-blue-500">
+              <Button onClick={()=>navigate('/browsequestions')} size="lg" className="h-12 px-8 relative bg-blue-600 hover:bg-blue-500 text-white rounded-sm">
                 Browse Questions
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>

@@ -73,19 +73,26 @@ const Login = () => {
 
     }
     return (
-        <div className='relative w-full h-screen md:h-[760px] bg-blue-100 overflow-hidden'>
-            <div className='min-h-screen flex flex-col to-muted/20'>
-                <div className='flex-1 flex items-center justify-center p-4'>
+        
+        <div
+  className="bg-cover bg-center h-full w-full"
+  style={{
+    backgroundImage:
+      "url('https://i.pinimg.com/1200x/83/6f/7c/836f7cfc772af123841c59e3bf7835a6.jpg')",
+  }}
+>
+
+            <div className='min-h-screen flex to-muted/20'>
+                <div className='flex-1 flex p-4'>
                     <div className='w-full max-w-md space-y-6 flex flex-col items-center'>
-                        <div className='text-center space-y-2'>
-                            <h1 className='text-3xl font-bold tracking-tight text-blue-600'>Login into your account</h1>
-                            <p className='text-gray-600'>Start organizing your thoughts and ideas today</p>
-                        </div>
-                        <Card className="w-full max-w-sm">
+                        
+                        <Card className="w-full max-w-sm h-full bg-white align-left ">
+                            <div className="flex-row">
+                            <div className="justify-center items-center flex-col">
                             <CardHeader className='space-y-1'>
-                                <CardTitle className='text-2xl text-center text-blue-600'>Login</CardTitle>
-                                <CardDescription className='text-center'>
-                                        Login into your account to get started with Notes App
+                                <CardTitle className='text-2xl text-center text-blue-600 '>Login</CardTitle>
+                                <CardDescription className='text-left'>
+                                        Login into your account to get started with LearnStack
                                     </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -121,12 +128,12 @@ const Login = () => {
                                             <Button
                                                 variant='ghost'
                                                 size="sm"
-                                                className='absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent'
+                                                className='rounded-sm absolute right-0 top-0 h-full px-6 py-4 hover:bg-transparent'
                                                 onClick={() => setShowPassword(!showPassword)}
                                                 disabled={isLoading}
                                             >
                                                 {
-                                                    showPassword ? <EyeOff className="w-4 h-4 text-gray-600" /> : <Eye className="w-4 h-4 text-gray-600" />
+                                                    showPassword ? <EyeOff className="w-4 h-4 text-gray-600 rounded-sm" /> : <Eye className="w-4 h-4 text-gray-600" />
                                                 }
 
                                             </Button>
@@ -135,7 +142,7 @@ const Login = () => {
                                 </div>
                             </CardContent>
                             <CardFooter className="flex-col gap-2">
-                                <Button onClick={handleSubmit} type="submit" className="w-full bg-blue-600 hover:bg-blue-500">
+                                <Button onClick={handleSubmit} type="submit" className="w-full rounded-sm bg-blue-600 hover:bg-blue-500 text-white">
                                     {
                                         isLoading ? (
                                             <>
@@ -145,14 +152,17 @@ const Login = () => {
                                         ) : "Login"
                                     }
                                 </Button>
-                                <Button onClick={()=>window.open("http://localhost:8000/auth/google", "_self")} className='w-full' variant='outline'>
+                                <Button onClick={()=>window.open("http://localhost:8000/auth/google", "_self")} className='rounded-sm w-full text-black' variant='outline'>
                                     <img src={Google} alt="" className='w-5'/>
                                     Login with Google
                                     </Button>
                                 <div className="text-sm text-center mt-2">
-                                    Don't have an account? <Link to="/signup" className="text-blue-600 font-medium">Sign up</Link>
+                                    Don't have an account? <Link to="/signup" className="text-blue-600 font-medium text-white ">Sign up</Link>
                                 </div>
                             </CardFooter>
+                            <img src="https://i.pinimg.com/originals/48/a1/91/48a191cf436936466f66599a6aa0eda9.gif" alt="" />
+                            </div>
+                            </div>
                         </Card>
                     </div>
                 </div>

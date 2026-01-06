@@ -42,10 +42,7 @@ const ForgotPassword = () => {
                 {/* Main content */}
                 <div className='flex-1 flex items-center justify-center p-4'>
                     <div className='w-full max-w-md space-y-6'>
-                        <div className='text-center space-y-2'>
-                            <h1 className='text-3xl font-bold tracking-tight text-blue-600'>Reset Your password</h1>
-                            <p className='text-muted-foreground'>Enter your email address and we'll send you instructions to reset your password</p>
-                        </div>
+                    
                         <Card className='bg-white'>
                             <CardHeader className='space-y-1'>
                                 <CardTitle className='text-2xl text-center text-blue-600'>Forgot Password</CardTitle>
@@ -113,7 +110,7 @@ const ForgotPassword = () => {
                             <CardFooter className='flex justify-center'>
                                 <p>
                                     Remember your password?{" "}
-                                    <Link to={'/login'} className='text-blue-600 hover:underline font-medium relative'>Sign in</Link>
+                                    <Link to={'/login'} className='text-blue-600 hover:underline font-medium relative rounded-sm '>Sign in</Link>
                                 </p>
                             </CardFooter>
                         </Card>

@@ -15,9 +15,6 @@ import { toast } from 'sonner'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
-
-
-
 const Signup = () => {
     const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false)
@@ -66,19 +63,23 @@ const Signup = () => {
         
     }
     return (
-        <div className='relative w-full h-screen md:h-[760px] bg-blue-100 overflow-hidden'>
+ 
+        <div
+  className="bg-cover bg-center h-full w-full"
+  style={{
+    backgroundImage:
+      "url('https://i.pinimg.com/736x/26/7d/c4/267dc427eb76251d3a6dd1271d4f6de5.jpg')",
+  }}
+>
             <div className='min-h-screen flex flex-col to-muted/20'>
                 <div className='flex-1 flex items-center justify-center p-4'>
                     <div className='w-full max-w-md space-y-6'>
-                        <div className='text-ceter space-y-2'>
-                            <h1 className='text-3xl font-bold tracking-tight text-blue-600'>Create your account</h1>
-                            <p className='text-gray-600'>Start organizing your thoughts and ideas today</p>
-                        </div>
+
                         <Card className="w-full max-w-sm">
                             <CardHeader className='space-y-1'>
                                 <CardTitle className='text-2xl text-center text-blue-600'>Sign up</CardTitle>
                                 <CardDescription className='text-center'>
-                                    Create your account to get started with Notes App
+                                    Create your account to get started with Learnstack
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>                   
@@ -136,7 +137,7 @@ const Signup = () => {
                                     </div>                          
                             </CardContent>
                             <CardFooter className="flex-col gap-2">
-                                <Button onClick={handleSubmit} type="submit" className="w-full bg-blue-600 hover:bg-blue-500">
+                                <Button onClick={handleSubmit} type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white rounded-sm">
                                     {
                                         isLoading ? (
                                         <>
