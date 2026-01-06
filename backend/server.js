@@ -13,6 +13,7 @@ import chatRoutes from "./routes/chat.routes.js"; // 👈 includes /ai route
 
 // Import passport config
 import "./config/passport.js";
+import avatarRoutes from "./routes/avatarRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -30,7 +31,7 @@ app.use(
   })
 );
 
-// Serve uploaded files
+// Serve uploaded files (you already have this)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Simple request logger
@@ -44,6 +45,9 @@ app.use("/auth", authRoute);
 app.use("/user", userRoute);
 app.use("/api/questions", questionRoutes);
 app.use("/api/chat", chatRoutes); // 👈 include chat routes here
+app.use("/api/user", avatarRoutes);
+
+
 
 // Start server & connect to DB
 app.listen(PORT, () => {

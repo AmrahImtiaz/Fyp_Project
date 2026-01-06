@@ -3,7 +3,6 @@ import { verifyMail } from "../emailVerify/verifyMail.js";
 import { Session } from "../models/sessionModel.js";
 import { User } from "../models/userModel.js";
 import bcrypt from "bcryptjs"
-
 import jwt from "jsonwebtoken"
 
 export const registerUser = async (req, res) => {
@@ -112,68 +111,69 @@ export const verification = async (req, res) => {
 }
 
 export const loginUser = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        if (!email || !password) {
-            return res.status(400).json({
-                success: false,
-                message: 'All fields are required'
-            })
-        }
-        const user = await User.findOne({ email })
-        if (!user) {
-            return res.status(401).json({
-                success: false,
-                message: "Unauthorized access"
-            })
-        }
-        const passwordCheck = await bcrypt.compare(password, user.password)
-        if (!passwordCheck) {
-            return res.status(402).json({
-                success: false,
-                message: "Incorrect Password"
-            })
-        }
+  try {
+    const { email, password } = req.body;
+    if (!email || !password)
+      return res.status(400).json({ success: false, message: 'All fields are required' });
 
-        //check if user is verified 
-        if (user.isVerified !== true) {
-            return res.status(403).json({
-                success: false,
-                message: "Verify your account than login"
-            })
-        }
+    const user = await User.findOne({ email });
+    if (!user)
+      return res.status(401).json({ success: false, message: "Unauthorized access" });
 
-        // check for existing session and delete it
-        const existingSession = await Session.findOne({ userId: user._id });
-        if (existingSession) {
-            await Session.deleteOne({ userId: user._id })
-        }
+    const passwordCheck = await bcrypt.compare(password, user.password);
+    if (!passwordCheck)
+      return res.status(402).json({ success: false, message: "Incorrect Password" });
 
-        //create a new session
-        await Session.create({ userId: user._id })
+    if (user.isVerified !== true)
+      return res.status(403).json({ success: false, message: "Verify your account before login" });
 
-        //Generate tokens
-        const accessToken = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: "10d" })
-        const refreshToken = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: "30d" })
+    // Delete existing session if any
+    const existingSession = await Session.findOne({ userId: user._id });
+    if (existingSession) await Session.deleteOne({ userId: user._id });
 
-        user.isLoggedIn = true;
-        await user.save()
+    // Create a new session
+    await Session.create({ userId: user._id });
 
-        return res.status(200).json({
-            success: true,
-            message: `Welcome back ${user.username}`,
-            accessToken,
-            refreshToken,
-            user
-        })
-    } catch (error) {
-            console.error(error)
-            return res.status(500).json({
-                success: false,
-                message: error.message
-            })
+    // Update login dates for streak
+    const today = new Date();
+    const lastLogin = user.loginDates[user.loginDates.length - 1];
+    if (!lastLogin || lastLogin.toDateString() !== today.toDateString()) {
+      user.loginDates.push(today);
     }
-}
+
+    // Calculate streak
+    let streak = 1;
+    const dates = user.loginDates.map(d => new Date(d)).sort((a, b) => b - a);
+    for (let i = 1; i < dates.length; i++) {
+      const diff = (dates[i - 1] - dates[i]) / (1000 * 60 * 60 * 24);
+      if (diff === 1) streak++;
+      else break;
+    }
+
+    user.isLoggedIn = true;
+    await user.save();
+
+    // Generate tokens
+    const accessToken = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: "10d" });
+    const refreshToken = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: "30d" });
+
+    return res.status(200).json({
+      success: true,
+      message: `Welcome back ${user.username}`,
+      accessToken,
+      refreshToken,
+      user: {
+        ...user.toObject(),
+        streak, // <-- include streak in response
+      }
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 
 export const logoutUser = async (req, res) => {
     try {

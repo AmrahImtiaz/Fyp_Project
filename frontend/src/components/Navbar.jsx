@@ -88,7 +88,9 @@ const searchRef = useRef(null);
       </div>
 
       <div className="flex justify-between items-center border-t px-4 py-2 bg-muted/30">
-        <Button size="sm" className="rounded-sm" >Ask a question</Button>
+        <Button size="sm" className="rounded-sm" >   <Link to="/askquestion" className="hover:text-blue-600">
+            Ask Questions
+          </Link> </Button>
         
       </div>
     </div>
