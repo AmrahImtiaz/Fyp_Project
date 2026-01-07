@@ -1,16 +1,13 @@
-import { getData } from '@/context/userContext'
-import React from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate } from "react-router-dom";
+import { getData } from "@/context/userContext";
 
-const ProtectedRoute = ({children}) => {
-    const {user} = getData()
-  return (
-    <div>
-      {
-        user ? children : <Navigate to={'/login'}/>
-      }
-    </div>
-  )
-}
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = getData();
 
-export default ProtectedRoute
+  if (loading) return null; // or loader
+  if (!user) return <Navigate to="/login" />;
+
+  return children;
+};
+
+export default ProtectedRoute;

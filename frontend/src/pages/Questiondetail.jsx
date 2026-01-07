@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -13,79 +13,32 @@ export default function QuestionDetailPage() {
   const { id } = useParams(); // React Router param
   const [newAnswer, setNewAnswer] = useState("");
   const [userVote, setUserVote] = useState(null);
+  const [question, setQuestion] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const questionList = [
-    {
-      id: 1,
-      title: "How do I solve systems of linear equations with matrices?",
-      content: `I'm trying to understand how to use matrices to solve systems of linear equations. I have the following system:
+  useEffect(() => {
+    const fetchQuestion = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`http://localhost:8000/api/questions/${id}`);
+        const json = await res.json();
+        // API returns { question: q }
+        const q = json.question || json;
+        setQuestion(q);
+      } catch (err) {
+        console.error("Failed to load question", err);
+        setError("Failed to load question");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-2x + 3y = 7
-4x - y = 1
+    if (id) fetchQuestion();
+  }, [id]);
 
-I know I need to set this up as a matrix equation Ax = b, but I'm not sure about the next steps. Can someone walk me through the process of using Gaussian elimination or matrix inversion to solve this?
-
-I've tried setting up the augmented matrix:
-[2  3 | 7]
-[4 -1 | 1]
-
-But I'm not sure how to proceed from here. Any help would be greatly appreciated!`,
-      author: {
-        name: "John Doe",
-        avatar: "/placeholder.svg?height=40&width=40",
-        reputation: 1250,
-        badges: ["Student", "Curious"],
-      },
-      tags: ["mathematics", "linear-algebra", "matrices", "systems-of-equations"],
-      votes: 15,
-      views: 234,
-      answers: 3,
-      createdAt: new Date(Date.now() - 86400000),
-      difficulty: "Intermediate",
-      subject: "Mathematics",
-    },
-    {
-      id: 2,
-      title: "What is the difference between speed and velocity?",
-      content: `I am confused between speed and velocity. They seem similar, but I know there is a difference in physics. Can someone explain with simple examples?`,
-      author: {
-        name: "Mary Jane",
-        avatar: "/placeholder.svg?height=40&width=40",
-        reputation: 890,
-        badges: ["Physics Learner"],
-      },
-      tags: ["physics", "motion", "velocity", "speed"],
-      votes: 10,
-      views: 150,
-      answers: 2,
-      createdAt: new Date(Date.now() - 50000000),
-      difficulty: "Beginner",
-      subject: "Physics",
-    },
-    {
-      id: 3,
-      title: "How does the internet work?",
-      content: `I want to understand how the internet actually works. What happens when I type a URL and press enter? How does the data reach my browser?`,
-      author: {
-        name: "Alex Turner",
-        avatar: "/placeholder.svg?height=40&width=40",
-        reputation: 1050,
-        badges: ["Tech Curious"],
-      },
-      tags: ["technology", "internet", "networking"],
-      votes: 22,
-      views: 320,
-      answers: 5,
-      createdAt: new Date(Date.now() - 70000000),
-      difficulty: "Intermediate",
-      subject: "Computer Science",
-    },
-  ];
-
-  const questionId = parseInt(id, 10);
-  const question = questionList.find((q) => q.id === questionId);
-
-  if (!question) return <p className="text-center mt-10">Question not found.</p>;
+  if (loading) return <p className="text-center mt-10">Loading...</p>;
+  if (error || !question) return <p className="text-center mt-10">Question not found.</p>;
 
   const answers = [
     {
@@ -176,6 +129,17 @@ But I'm not sure how to proceed from here. Any help would be greatly appreciated
     }
   };
 
+  const getInitials = (fullName) => {
+    if (!fullName) return "?";
+    return fullName
+      .toString()
+      .split(" ")
+      .filter(Boolean)
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+  };
+
   return (
     <>
       <Navbar />
@@ -256,17 +220,12 @@ But I'm not sure how to proceed from here. Any help would be greatly appreciated
 
                   <div className="flex items-center space-x-3">
                     <Avatar className="w-8 h-8">
-                      <AvatarImage src={question.author.avatar || "/placeholder.svg"} alt={question.author.name} />
-                      <AvatarFallback>
-                        {question.author.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </AvatarFallback>
+                      <AvatarImage src={question.author?.avatar || "/placeholder.svg"} alt={question.author?.name || "Author"} />
+                      <AvatarFallback>{getInitials(question.author?.name || question.author?.username)}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <div className="font-medium text-sm">{question.author.name}</div>
-                      <div className="text-xs text-muted-foreground">{question.author.reputation} reputation</div>
+                      <div className="font-medium text-sm">{question.author?.name || question.author?.username || "Unknown"}</div>
+                      <div className="text-xs text-muted-foreground">{question.author?.reputation || 0} reputation</div>
                     </div>
                   </div>
                 </div>
