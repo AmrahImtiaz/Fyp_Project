@@ -29,25 +29,33 @@ export default function Userprofile() {
 
   // Fetch user data from backend
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await axios.get("/api/user/profile"); // <-- your API endpoint
-        setUser({
-          username: res.data.username,
-          avatar: res.data.avatar,
-          googleAvatar: res.data.googleAvatar,
-          streak: res.data.streak,
-        });
+  const fetchUser = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
 
-        // If your backend also returns stats:
-        if (res.data.stats) setStats(res.data.stats);
-      } catch (err) {
-        console.error("Failed to fetch user:", err);
-      }
-    };
+      const res = await axios.get("/api/user/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    fetchUser();
-  }, []);
+      const data = res.data.user || res.data; // works for both cases
+
+      setUser({
+        username: data.username,
+        avatar: data.avatar,
+        googleAvatar: data.googleAvatar,
+        streak: data.streak,
+      });
+
+      if (data.stats) setStats(data.stats);
+    } catch (err) {
+      console.error("Failed to fetch user:", err);
+    }
+  };
+
+  fetchUser();
+}, []);
 
   const handleUpload = async (e) => {
   const file = e.target.files[0];
@@ -57,13 +65,15 @@ export default function Userprofile() {
   formData.append("avatar", file);
 
   try {
-    const token = localStorage.getItem("accessToken");
-const res = await axios.post("/api/user/upload-avatar", formData, {
+   
+const token = localStorage.getItem("accessToken");
+
+const res = await axios.get("/api/user/profile", {
   headers: {
-    "Content-Type": "multipart/form-data",
     Authorization: `Bearer ${token}`,
-  },
+  }
 });
+
     if (res.data.success) {  
 
       setUser((prev) => ({

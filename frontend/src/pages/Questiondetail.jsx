@@ -48,26 +48,42 @@ export default function QuestionDetailPage() {
 
 const handleSubmitAnswer = async () => {
   if (!newAnswer.trim()) return;
+
+  const token = localStorage.getItem("authToken"); // <-- token stored after login
+  if (!token) {
+    alert("You must be logged in to post an answer");
+    return;
+  }
+
   try {
     const res = await fetch(`http://localhost:8000/api/questions/${id}/answers`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // your auth token
+        Authorization: `Bearer ${token}`, // must include token
       },
       body: JSON.stringify({ content: newAnswer }),
     });
+
+    if (!res.ok) {
+      const error = await res.json();
+      alert(error.message || "Failed to submit answer");
+      return;
+    }
+
     const data = await res.json();
+
     if (data.success) {
       setQuestion(prev => ({
         ...prev,
-        answers: [...prev.answers, data.answer],
-        answersCount: prev.answersCount + 1,
+        answers: [...(prev.answers || []), data.answer],
+        answersCount: (prev.answersCount || 0) + 1,
       }));
       setNewAnswer("");
     }
   } catch (err) {
     console.error(err);
+    alert("Server error, try again");
   }
 };
 

@@ -1,10 +1,9 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom" // ✅ top-level import
+import { useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import { motion } from "framer-motion"
 import { Upload, X, Plus, HelpCircle, FileText, ImageIcon, Video } from "lucide-react"
-
 import { Button } from "../components/ui/button"
 import { Input } from "../components/ui/input"
 import { Textarea } from "../components/ui/textarea"
@@ -14,7 +13,7 @@ import { Label } from "../components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
 
 export default function AskQuestionPage() {
-  const navigate = useNavigate() // ✅ define here at top-level of component
+  const navigate = useNavigate()
 
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
@@ -35,66 +34,63 @@ export default function AskQuestionPage() {
     setTags(tags.filter((t) => t !== tag))
   }
 
+  const handleFileUpload = (e) => {
+    const files = Array.from(e.target.files || [])
+    const validFiles = []
 
-const handleFileUpload = (e) => {
-  const files = Array.from(e.target.files || [])
+    for (let file of files) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`${file.name} is larger than 5MB`)
+        continue
+      }
 
-  const validFiles = []
+      if (file.type !== "image/png" && file.type !== "image/jpeg") {
+        alert(`${file.name} is not a PNG or JPEG`)
+        continue
+      }
 
-  for (let file of files) {
-    // ❌ size check (5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert(`${file.name} is larger than 5MB`)
-      continue
+      validFiles.push(file)
     }
 
-    // ❌ type check (PNG / JPEG only)
-    if (
-      file.type !== "image/png" &&
-      file.type !== "image/jpeg"
-    ) {
-      alert(`${file.name} is not a PNG or JPEG`)
-      continue
-    }
-
-    // ✅ file is valid
-    validFiles.push(file)
+    setUploadedFiles((prev) => [...prev, ...validFiles])
   }
 
-  setUploadedFiles((prev) => [...prev, ...validFiles])
-}
-
-  
   const handleRemoveFile = (index) => {
     setUploadedFiles(uploadedFiles.filter((_, i) => i !== index))
   }
 
+  const getFileIcon = (file) => {
+    if (file.type.startsWith("image/")) return <ImageIcon className="w-4 h-4" />
+    if (file.type.startsWith("video/")) return <Video className="w-4 h-4" />
+    return <FileText className="w-4 h-4" />
+  }
+
   const handleSubmit = async () => {
+    if (!title.trim() || !content.trim()) {
+      alert("Title and content are required")
+      return
+    }
+
     try {
+      const token = localStorage.getItem("authToken")
+      if (!token) {
+        alert("Please log in to post a question.")
+        return
+      }
+
       const formData = new FormData()
       formData.append("title", title)
       formData.append("content", content)
       formData.append("subject", subject)
       formData.append("difficulty", difficulty)
-      // send tags as a single comma-separated string so backend can split
-      if (tags.length) formData.append("tags", tags.join(","))
-      
-        uploadedFiles.forEach((file) => {
-  formData.append("media", file)
-})
-
-
-      const accessToken = localStorage.getItem("accessToken")
-      if (!accessToken) {
-        alert("Please log in to post a question.")
-        return
-      }
-      const headers = { Authorization: `Bearer ${accessToken}` }
+      formData.append("tags", tags.join(","))
+      uploadedFiles.forEach((file) => formData.append("files", file))
 
       const res = await fetch("http://localhost:8000/api/questions", {
         method: "POST",
-        credentials: "include",
-        headers,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: formData,
       })
 
@@ -102,16 +98,10 @@ const handleFileUpload = (e) => {
 
       if (!res.ok) throw new Error(data.message)
 
-      navigate("/browsequestions") // ✅ redirect after successful post
+      navigate("/browsequestions") // redirect to question list
     } catch (err) {
       alert(err.message)
     }
-  }
-
-  const getFileIcon = (file) => {
-    if (file.type.startsWith("image/")) return <ImageIcon className="w-4 h-4" />
-    if (file.type.startsWith("video/")) return <Video className="w-4 h-4" />
-    return <FileText className="w-4 h-4" />
   }
 
   return (
@@ -131,19 +121,16 @@ const handleFileUpload = (e) => {
                     <CardTitle>Question Details</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    {/* Title */}
                     <div>
                       <Label>Title</Label>
                       <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter question title" />
                     </div>
 
-                    {/* Content */}
                     <div>
                       <Label>Question Content</Label>
                       <Textarea className="min-h-[200px]" value={content} onChange={(e) => setContent(e.target.value)} />
                     </div>
 
-                    {/* File Upload (optional) */}
                     <div>
                       <Label>Media & Files (optional)</Label>
                       <input type="file" multiple onChange={handleFileUpload} className="hidden" id="file-upload" />
@@ -156,30 +143,25 @@ const handleFileUpload = (e) => {
                     {uploadedFiles.map((file, index) => (
                       <div key={index} className="flex justify-between items-center bg-muted p-2 rounded">
                         <div className="flex items-center gap-2">{getFileIcon(file)}<span>{file.name}</span></div>
-                        <Button size="icon" variant="ghost" onClick={() => handleRemoveFile(index)}>
-                          <X className="w-4 h-4" />
-                        </Button>
+                        <Button size="icon" variant="ghost" onClick={() => handleRemoveFile(index)}><X className="w-4 h-4" /></Button>
                       </div>
                     ))}
 
-                    {/* Tags (optional) */}
                     <div>
                       <Label>Tags (optional)</Label>
                       <div className="flex gap-2">
-                        <Input placeholder="Enter tag (optional)" value={newTag} onChange={(e) => setNewTag(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleAddTag()} />
+                        <Input placeholder="Enter tag" value={newTag} onChange={(e) => setNewTag(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleAddTag()} />
                         <Button variant="outline" onClick={handleAddTag}><Plus className="w-4 h-4" /></Button>
                       </div>
                       <div className="flex flex-wrap gap-2 mt-2">
                         {tags.map(tag => (
                           <Badge key={tag}>
-                            {tag}
-                            <X className="ml-1 w-3 h-3 cursor-pointer" onClick={() => handleRemoveTag(tag)} />
+                            {tag}<X className="ml-1 w-3 h-3 cursor-pointer" onClick={() => handleRemoveTag(tag)} />
                           </Badge>
                         ))}
                       </div>
                     </div>
 
-                    {/* Selects */}
                     <div className="grid md:grid-cols-2 gap-4">
                       <Select value={subject} onValueChange={setSubject}>
                         <SelectTrigger><SelectValue placeholder="Select Subject" /></SelectTrigger>
@@ -200,14 +182,11 @@ const handleFileUpload = (e) => {
                       </Select>
                     </div>
 
-                    <Button className="w-full" disabled={!title || !content} onClick={handleSubmit}>
-                      Post Question
-                    </Button>
+                    <Button className="w-full" disabled={!title || !content} onClick={handleSubmit}>Post Question</Button>
                   </CardContent>
                 </Card>
               </div>
 
-              {/* Sidebar */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2"><HelpCircle className="w-5 h-5" />Tips</CardTitle>
@@ -222,7 +201,7 @@ const handleFileUpload = (e) => {
           </motion.div>
         </div>
       </div>
-      <Footer></Footer>
+      <Footer />
     </>
   )
 }

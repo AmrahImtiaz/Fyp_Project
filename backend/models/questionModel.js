@@ -8,17 +8,24 @@ const answerSchema = new mongoose.Schema({
 });
 
 const questionSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  content: { type: String, required: true },
-  tags: [{ type: String }],
-  subject: { type: String },
-  difficulty: { type: String },
-  mediaUrl: { type: String },
-  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  title: String,
+  content: String,
+  tags: [String],
+  subject: String,
+  difficulty: String,
   votes: { type: Number, default: 0 },
   views: { type: Number, default: 0 },
   answersCount: { type: Number, default: 0 },
-  answers: [answerSchema], // ✅ ADD THIS
+  answers: [
+    {
+      content: String,
+      author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      votes: { type: Number, default: 0 },
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
+  author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 }, { timestamps: true });
+
 
 export default mongoose.model('Question', questionSchema);
