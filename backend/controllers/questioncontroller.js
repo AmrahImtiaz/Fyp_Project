@@ -4,6 +4,7 @@ import { User } from "../models/userModel.js";
 import { checkBadges } from "../utils/badgeChecker.js";
 import mongoose from "mongoose";
 
+
 // Create a question
 export const createQuestion = async (req, res) => {
   const { title, content, tags = [], subject, difficulty } = req.body;
@@ -115,7 +116,7 @@ export const voteQuestion = async (req, res) => {
   }
 };
 
-// Get single question with answers and increment views
+// Get single question with answers
 export const getQuestion = async (req, res) => {
   try {
     const question = await Question.findById(req.params.id)
@@ -124,7 +125,7 @@ export const getQuestion = async (req, res) => {
 
     if (!question) return res.status(404).json({ error: "Question not found" });
 
-    // Increment views
+    // increment views
     question.views = (question.views || 0) + 1;
     await question.save();
 

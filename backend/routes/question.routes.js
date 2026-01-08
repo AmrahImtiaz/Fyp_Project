@@ -7,7 +7,8 @@ import {
   createQuestion,
   listQuestions,
   getQuestion,
-  voteQuestion
+  voteQuestion,
+  addAnswer
 } from "../controllers/questioncontroller.js";
 
 const router = express.Router();
