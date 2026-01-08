@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Trophy, Flame, Star, Upload } from "lucide-react";
+import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 
@@ -48,24 +49,34 @@ export default function Userprofile() {
     fetchUser();
   }, []);
 
-  // Handle avatar upload
   const handleUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  const file = e.target.files[0];
+  if (!file) return;
 
-    const formData = new FormData();
-    formData.append("avatar", file);
+  const formData = new FormData();
+  formData.append("avatar", file);
 
-    try {
-      const res = await axios.post("/api/user/upload-avatar", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+  try {
+    const token = localStorage.getItem("accessToken");
+const res = await axios.post("/api/user/upload-avatar", formData, {
+  headers: {
+    "Content-Type": "multipart/form-data",
+    Authorization: `Bearer ${token}`,
+  },
+});
+    if (res.data.success) {  
 
-      setUser({ ...user, avatar: res.data.avatarUrl });
-    } catch (err) {
-      console.error("Upload failed:", err);
+      setUser((prev) => ({
+  ...prev,
+  avatar: res.data.avatarUrl
+}));
+
     }
-  };
+  } catch (err) {
+    console.error("Upload failed:", err);
+  }
+};
+
 
   return (
     <>
@@ -74,12 +85,10 @@ export default function Userprofile() {
         <Card className="rounded-2xl shadow-md">
           <CardHeader className="flex flex-row items-center gap-4">
             <div className="relative">
-              <Avatar className="h-16 w-16">
-                <AvatarImage
-                  src={user.avatar || user.googleAvatar || "https://i.pravatar.cc/150"}
-                />
-                <AvatarFallback>RC</AvatarFallback>
-              </Avatar>
+              <Avatar>
+  <AvatarImage src={user.avatar ? `${user.avatar}?t=${Date.now()}` : user.googleAvatar || "https://i.pravatar.cc/150"} />
+  <AvatarFallback>RC</AvatarFallback>
+</Avatar>
 
               <label className="absolute bottom-0 right-0 bg-white rounded-full p-1 cursor-pointer shadow-md">
                 <Upload className="h-4 w-4 text-gray-600" />
@@ -163,6 +172,7 @@ export default function Userprofile() {
           </CardContent>
         </Card>
       </div>
+      <Footer></Footer>
     </>
   );
 }

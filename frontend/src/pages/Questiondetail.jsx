@@ -40,70 +40,7 @@ export default function QuestionDetailPage() {
   if (loading) return <p className="text-center mt-10">Loading...</p>;
   if (error || !question) return <p className="text-center mt-10">Question not found.</p>;
 
-  const answers = [
-    {
-      id: "1",
-      content: `Great question! Let me walk you through solving this system using Gaussian elimination...`,
-      author: {
-        name: "Dr. Sarah Wilson",
-        avatar: "/placeholder.svg?height=40&width=40",
-        reputation: 4250,
-        badges: ["Expert", "Educator", "Top Contributor"],
-      },
-      votes: 23,
-      isAccepted: true,
-      createdAt: new Date(Date.now() - 43200000),
-      comments: [
-        {
-          id: "c1",
-          content: "This is exactly what I needed! The step-by-step breakdown really helps.",
-          author: {
-            name: "John Doe",
-            avatar: "/placeholder.svg?height=32&width=32",
-          },
-          createdAt: new Date(Date.now() - 21600000),
-        },
-      ],
-    },
-    {
-      id: "2",
-      content: `Another approach is to use matrix inversion...`,
-      author: {
-        name: "Mike Chen",
-        avatar: "/placeholder.svg?height=40&width=40",
-        reputation: 2890,
-        badges: ["Helper", "Mathematics"],
-      },
-      votes: 12,
-      isAccepted: false,
-      createdAt: new Date(Date.now() - 32400000),
-      comments: [],
-    },
-    {
-      id: "3",
-      content: `For a more intuitive understanding, you can also think of this geometrically...`,
-      author: {
-        name: "Alex Rodriguez",
-        avatar: "/placeholder.svg?height=40&width=40",
-        reputation: 1560,
-        badges: ["Student", "Helper"],
-      },
-      votes: -2,
-      isAccepted: false,
-      createdAt: new Date(Date.now() - 18000000),
-      comments: [
-        {
-          id: "c2",
-          content: "I think there might be an error in your substitution. Could you double-check?",
-          author: {
-            name: "Emma Davis",
-            avatar: "/placeholder.svg?height=32&width=32",
-          },
-          createdAt: new Date(Date.now() - 14400000),
-        },
-      ],
-    },
-  ];
+
 
   const handleVote = (direction) => {
     setUserVote(userVote === direction ? null : direction);
@@ -233,8 +170,96 @@ export default function QuestionDetailPage() {
             </Card>
           </motion.div>
 
-          {/* The rest of your Answers & Add Answer sections remain unchanged, but make sure to use optional chaining for dates: */}
-          {/* Example for answer comment date: */}
+          {/* Answers Section */}
+<Card className="mb-8">
+  <CardHeader>
+    <CardTitle>{question.answers?.length || 0} Answers</CardTitle>
+  </CardHeader>
+
+  <CardContent className="space-y-6">
+    {question.answers && question.answers.length > 0 ? (
+      question.answers.map((answer, i) => (
+        <div key={i} className="border-b pb-4">
+          <div className="flex gap-4">
+            <div className="flex flex-col items-center">
+              <ArrowUp className="w-4 h-4 mb-1" />
+              <span>{answer.votes || 0}</span>
+              <ArrowDown className="w-4 h-4 mt-1" />
+            </div>
+
+            <div className="flex-1">
+              <p className="mb-2 text-gray-700">{answer.content}</p>
+
+              {/* Answer Author */}
+              <div className="flex items-center gap-2 text-sm text-gray-500">
+                <Avatar className="h-6 w-6">
+                  <AvatarImage src={answer.author?.avatar} />
+                  <AvatarFallback>
+                    {answer.author?.name?.[0] || "?"}
+                  </AvatarFallback>
+                </Avatar>
+                <span>{answer.author?.name || "Unknown"}</span>
+                <Clock className="w-3 h-3 ml-2" />
+                <span>
+                  {answer.createdAt
+                    ? new Date(answer.createdAt).toLocaleDateString()
+                    : "-"}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))
+    ) : (
+      <p>No answers yet. Be the first to answer!</p>
+    )}
+  </CardContent>
+</Card>
+{/* Add Answer Section */}
+<Card className="mb-8">
+  <CardHeader>
+    <CardTitle>Your Answer</CardTitle>
+  </CardHeader>
+
+  <CardContent>
+    <Textarea
+      placeholder="Write your answer here..."
+      value={newAnswer}
+      onChange={(e) => setNewAnswer(e.target.value)}
+      className="mb-4"
+    />
+
+    <Button
+      onClick={async () => {
+        if (!newAnswer.trim()) return;
+
+        const res = await fetch(`http://localhost:8000/api/questions/${id}/answers`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: newAnswer }),
+        });
+
+        const json = await res.json();
+
+        if (json.success) {
+          // update UI without refresh
+          setQuestion((prev) => ({
+            ...prev,
+            answers: [...prev.answers, json.answer],
+          }));
+
+          setNewAnswer("");
+        } else {
+          alert("Failed to submit answer");
+        }
+      }}
+    >
+      Post Your Answer
+    </Button>
+  </CardContent>
+</Card>
+
+
           {/* {comment.createdAt ? new Date(comment.createdAt).toLocaleDateString() : "-"} */}
         </div>
       </div>

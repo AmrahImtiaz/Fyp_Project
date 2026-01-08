@@ -4,6 +4,7 @@ import { FeaturesAccordion } from "@/components/features-accordion"
 import { AIAssistanceSection } from "@/components/ai-assistance-section"
 import { DocumentSummarizerSection } from "@/components/document-summarizer-section"
 import { GamifiedLearningSection } from "@/components/gamified-learning-section"
+import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
 
 const About = () => {
@@ -83,6 +84,7 @@ const About = () => {
       <AIAssistanceSection />
       <DocumentSummarizerSection />
       <GamifiedLearningSection />
+      <Footer></Footer>
     </>
   )
 }

@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom" // ✅ top-level import
 import Navbar from "../components/Navbar"
+import Footer from "../components/Footer"
 import { motion } from "framer-motion"
 import { Upload, X, Plus, HelpCircle, FileText, ImageIcon, Video } from "lucide-react"
 
@@ -183,9 +184,9 @@ const handleFileUpload = (e) => {
                       <Select value={subject} onValueChange={setSubject}>
                         <SelectTrigger><SelectValue placeholder="Select Subject" /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="cs">Computer Science</SelectItem>
-                          <SelectItem value="math">Mathematics</SelectItem>
-                          <SelectItem value="physics">Physics</SelectItem>
+                          <SelectItem value="Computer Science">Computer Science</SelectItem>
+                          <SelectItem value="Mathematics">Mathematics</SelectItem>
+                          <SelectItem value="Physics">Physics</SelectItem>
                         </SelectContent>
                       </Select>
 
@@ -221,6 +222,7 @@ const handleFileUpload = (e) => {
           </motion.div>
         </div>
       </div>
+      <Footer></Footer>
     </>
   )
 }

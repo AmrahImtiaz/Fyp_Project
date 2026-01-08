@@ -1,99 +1,149 @@
-import { cn } from "../lib/utils"
-//import { Logo, LogoImage, LogoText } from "../components/logo"
+import React from "react";
 
-const Footer = ({
-  // logo = {
-  //   src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/block-1.svg",
-  //   alt: "blocks for shadcn/ui",
-  //   title: "Shadcnblocks.com",
-  //   url: "https://www.shadcnblocks.com",
-  // },
-  className = "",
-  tagline = "Components made easy.",
-  menuItems = [
-    {
-      title: "Product",
-      links: [
-        { text: "Overview", url: "#" },
-        { text: "Pricing", url: "#" },
-        { text: "Marketplace", url: "#" },
-        { text: "Features", url: "#" },
-        { text: "Integrations", url: "#" },
-      ],
-    },
-    {
-      title: "Company",
-      links: [
-        { text: "About", url: "#" },
-        { text: "Team", url: "#" },
-        { text: "Blog", url: "#" },
-        { text: "Careers", url: "#" },
-        { text: "Contact", url: "#" },
-        { text: "Privacy", url: "#" },
-      ],
-    },
-    {
-      title: "Resources",
-      links: [
-        { text: "Help", url: "#" },
-        { text: "Sales", url: "#" },
-        { text: "Advertise", url: "#" },
-      ],
-    },
-    {
-      title: "Social",
-      links: [
-        { text: "Twitter", url: "#" },
-        { text: "Instagram", url: "#" },
-        { text: "LinkedIn", url: "#" },
-      ],
-    },
-  ],
-}) => {
+function Footer() {
   return (
-    <section className={cn("py-32", className)}>
-      <div className="container">
-        <footer>
-          <div className="grid grid-cols-2 gap-8 lg:grid-cols-6">
-            {/* Logo
-            <div className="col-span-2 mb-8 lg:mb-0">
-              <div className="flex items-center gap-2">
-                <Logo url={logo.url}>
-                  <LogoImage
-                    src={logo.src}
-                    alt={logo.alt}
-                    title={logo.title}
-                    className="h-10 dark:invert"
-                  />
-                  <LogoText className="text-xl">
-                    {logo.title}
-                  </LogoText>
-                </Logo>
-              </div>
-              <p className="mt-4 font-bold">{tagline}</p>
-            </div> */}
+    <>
+      <style>{`
+        *, *:before, *:after {
+          box-sizing: border-box;
+        }
 
-            {/* Menu */}
-            {menuItems.map((section, idx) => (
-              <div key={idx}>
-                <h3 className="mb-4 font-bold">{section.title}</h3>
-                <ul className="space-y-4 text-muted-foreground">
-                  {section.links.map((link, i) => (
-                    <li
-                      key={i}
-                      className="font-medium hover:text-primary"
-                    >
-                      <a href={link.url}>{link.text}</a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </footer>
-      </div>
-    </section>
-  )
+        html {
+          font-size: 100%;
+        }
+
+        body {
+          font-family: acumin-pro, system-ui, sans-serif;
+          margin: 0;
+          display: grid;
+          grid-template-rows: auto 1fr auto;
+          font-size: 14px;
+          background-color: #f4f4f4;
+          align-items: start;
+          min-height: 100vh;
+        }
+
+        .footer {
+          display: flex;
+          flex-flow: row wrap;
+          padding: 30px 30px 20px 30px;
+          color: #2f2f2f;
+          background-color: #fff;
+          border-top: 1px solid #e5e5e5;
+        }
+
+        .footer > * {
+          flex: 1 100%;
+        }
+
+        .footer__addr {
+          margin-right: 1.25em;
+          margin-bottom: 2em;
+        }
+
+        .footer__logo {
+          width: 120px;
+          height: auto;
+        }
+
+        .footer__addr h2 {
+          margin-top: 1.3em;
+          font-size: 15px;
+          font-weight: 400;
+        }
+
+        .nav__title {
+          font-weight: 400;
+          font-size: 15px;
+        }
+
+        .footer address {
+          font-style: normal;
+          color: #999;
+        }
+
+        .footer ul {
+          list-style: none;
+          padding-left: 0;
+        }
+
+        .footer li {
+          line-height: 2em;
+        }
+
+        .footer a {
+          text-decoration: none;
+        }
+
+        .footer__nav {
+          display: flex;
+          flex-flow: row wrap;
+        }
+
+        .footer__nav > * {
+          flex: 1 50%;
+          margin-right: 1.25em;
+        }
+
+        .nav__ul a {
+          color: #999;
+        }
+
+        @media screen and (min-width: 40.375em) {
+          .footer__nav > * {
+            flex: 1;
+          }
+
+          .footer__addr {
+            flex: 1 0px;
+          }
+
+          .footer__nav {
+            flex: 2 0px;
+          }
+        }
+      `}</style>
+
+      <footer className="footer">
+        <div className="footer__addr">
+<img
+  className="footer__logo"
+  src="https://i.pinimg.com/1200x/3b/87/94/3b8794efd5a090f7a7ccff79ad8ba31d.jpg"
+  alt="LearnStack Logo"
+/>
+
+          <h2>AI POWERED LEARNING</h2>
+
+          <address>
+            Enhancing Student Learning Through Digital Collaboration
+            <br />
+          </address>
+        </div>
+
+        <ul className="footer__nav">
+          <li className="nav__item">
+            <ul className="nav__ul">
+              <li>
+                <a href="/askquestion">Ask Questions</a>
+              </li>
+
+              <li>
+                <a href="#">Browse Question</a>
+              </li>
+
+              <li>
+                <a href="#">Chat with AI</a>
+              </li>
+
+              <li>
+                <a href="#">About</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </footer>
+    </>
+  );
 }
 
-export default Footer
+export default Footer;

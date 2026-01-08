@@ -18,6 +18,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
+import Footer from "@/components/Footer"
 import {
   Send,
   Bot,
@@ -291,6 +292,7 @@ const handleSendMessage = async () => {
       </div>
     </SidebarInset>
   </SidebarProvider>
+  <Footer></Footer>
   </>
 )
 }

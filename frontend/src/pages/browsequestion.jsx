@@ -53,28 +53,28 @@ export default function BrowseQuestionsPage() {
     const matchesFilter = filterBy === "all" || q.subject.toLowerCase() === filterBy.toLowerCase()
     return matchesSearch && matchesFilter
   })
-
-  const sortedQuestions = [...filteredQuestions].sort((a, b) => {
+  
+const sortedQuestions = [...filteredQuestions].sort((a, b) => {
   switch (sortBy) {
     case "newest":
-      return b.createdAt - a.createdAt
+      return new Date(b.createdAt) - new Date(a.createdAt);
 
     case "oldest":
-      return a.createdAt - b.createdAt
+      return new Date(a.createdAt) - new Date(b.createdAt);
 
     case "most-votes":
-      return b.votes - a.votes
+      return (b.votes || 0) - (a.votes || 0);
 
     case "most-answers":
-      return b.answers - a.answers
+      return (b.answersCount || b.answers || 0) - (a.answersCount || a.answers || 0);
 
     case "most-views":
-      return b.views - a.views
+      return (b.views || 0) - (a.views || 0);
 
     default:
-      return 0
+      return 0;
   }
-})
+});
 
 
   return (

@@ -9,7 +9,7 @@ import { fileURLToPath } from "url";
 import userRoute from "./routes/userRoute.js";
 import authRoute from "./routes/authRoute.js";
 import questionRoutes from "./routes/question.routes.js";
-import chatRoutes from "./routes/chat.routes.js"; // 👈 includes /ai route
+import chatRoutes from "./routes/chat.routes.js"; 
 
 // Import passport config
 import "./config/passport.js";
