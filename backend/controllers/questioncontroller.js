@@ -68,25 +68,6 @@ export const listQuestions = async (req, res) => {
   }
 };
 
-// Get a single question
-export const getQuestion = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const q = await Question.findById(id).populate(
-      "author",
-      "name reputation badges"
-    );
-    if (!q) return res.status(404).json({ message: "Question not found" });
-
-    q.views = (q.views || 0) + 1;
-    await q.save();
-
-    res.json({ question: q });
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
 // Vote on a question
 export const voteQuestion = async (req, res) => {
   let { id } = req.params;
@@ -133,3 +114,55 @@ export const voteQuestion = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+// Get single question with answers and increment views
+export const getQuestion = async (req, res) => {
+  try {
+    const question = await Question.findById(req.params.id)
+      .populate("author", "name reputation badges")
+      .populate("answers.author", "name reputation badges");
+
+    if (!question) return res.status(404).json({ error: "Question not found" });
+
+    // Increment views
+    question.views = (question.views || 0) + 1;
+    await question.save();
+
+    res.json({ question });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+
+// Add a new answer
+export const addAnswer = async (req, res) => {
+  try {
+    const { content } = req.body;
+    const userId = req.user._id; // from isAuthenticated middleware
+
+    if (!content) return res.status(400).json({ error: "Answer content required" });
+
+    const question = await Question.findById(req.params.id);
+    if (!question) return res.status(404).json({ error: "Question not found" });
+
+    const answer = {
+      content,
+      author: userId,
+      createdAt: new Date(),
+      votes: 0,
+    };
+
+    question.answers.push(answer);
+    question.answersCount = question.answers.length;
+    await question.save();
+
+    await question.populate("answers.author");
+    res.json({ success: true, answer: question.answers[question.answers.length - 1] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+

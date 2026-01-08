@@ -46,12 +46,31 @@ export default function QuestionDetailPage() {
     setUserVote(userVote === direction ? null : direction);
   };
 
-  const handleSubmitAnswer = () => {
-    if (newAnswer.trim()) {
-      console.log("Submitting answer:", newAnswer);
+const handleSubmitAnswer = async () => {
+  if (!newAnswer.trim()) return;
+  try {
+    const res = await fetch(`http://localhost:8000/api/questions/${id}/answers`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // your auth token
+      },
+      body: JSON.stringify({ content: newAnswer }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      setQuestion(prev => ({
+        ...prev,
+        answers: [...prev.answers, data.answer],
+        answersCount: prev.answersCount + 1,
+      }));
       setNewAnswer("");
     }
-  };
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 
   const getDifficultyColor = (difficulty) => {
     switch (difficulty) {

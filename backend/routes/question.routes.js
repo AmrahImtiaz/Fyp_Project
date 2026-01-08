@@ -47,5 +47,6 @@ router.get("/:id", getQuestion);
 
 // Vote on a question (up/down)
 router.put("/:id/vote", isAuthenticated, voteQuestion);
+router.post("/:id/answers", isAuthenticated, addAnswer);
 
 export default router;
