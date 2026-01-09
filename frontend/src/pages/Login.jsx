@@ -77,6 +77,10 @@ export const Login = () => {
   <>
     <style>
 {`
+* {
+  font-family: Ubuntu, Tahoma, sans-serif !important;
+}
+
 .login-page {
   background-color: #F1F3F6;
 }
@@ -96,6 +100,7 @@ export const Login = () => {
 }
 
 .page-heading {
+  font-family: 'Planet Jumbo', sans-serif;
   text-align: center;
   padding: 10px 0;
 }
@@ -321,7 +326,7 @@ export const Login = () => {
                 onClick={() =>
                   window.open("http://localhost:8000/auth/google", "_self")
                 }
-                className="w-full py-5 flex gap-2"
+                className="w-full py-5 flex gap-2 bg-gray-900 text-white rounded-sm"
               >
                 <img src={Google} className="w-5" />
                 Login with Google
@@ -329,7 +334,7 @@ export const Login = () => {
 
               {/* Signup Button */}
               <Link to="/signup">
-                <Button className="w-full py-5 bg-black text-white hover:bg-gray-800">
+                <Button className="w-full py-5 bg-blue-500 text-white hover:bg-gray-800 rounded-sm font-semibold ">
                   Signup Now
                 </Button>
               </Link>
@@ -340,7 +345,7 @@ export const Login = () => {
         {/* Right Section – Image */}
         <div className="hidden lg:flex flex-1">
           <img
-            src="https://svgshare.com/i/nDi.svg"
+            src="https://i.pinimg.com/736x/65/58/ed/6558ed12d715878f2598c611ff175cba.jpg"
             className="w-full h-full object-cover"
           />
         </div>
